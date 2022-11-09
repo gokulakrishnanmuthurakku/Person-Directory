@@ -1,6 +1,6 @@
-# Welcome to your CDK TypeScript project
+# Welcome
 
-This is a blank project for CDK development with TypeScript.
+This is a simple Person Directory with AWS CDK, API Gateway, Lambda and DynamoDB project for CDK development with TypeScript.
 
 The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
