@@ -1,0 +1,1161 @@
+{
+ "Resources": {
+  "TikkiePersonsTable3EE4F64B": {
+   "Type": "AWS::DynamoDB::Table",
+   "Properties": {
+    "KeySchema": [
+     {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+     },
+     {
+      "AttributeName": "firstName",
+      "KeyType": "RANGE"
+     }
+    ],
+    "AttributeDefinitions": [
+     {
+      "AttributeName": "id",
+      "AttributeType": "S"
+     },
+     {
+      "AttributeName": "firstName",
+      "AttributeType": "S"
+     }
+    ],
+    "ProvisionedThroughput": {
+     "ReadCapacityUnits": 5,
+     "WriteCapacityUnits": 5
+    },
+    "TableName": "Persons"
+   },
+   "UpdateReplacePolicy": "Retain",
+   "DeletionPolicy": "Retain",
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-Table/Resource"
+   }
+  },
+  "TikkiePersonLambdaServiceRole83CFAE74": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "lambda.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "ManagedPolicyArns": [
+     {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+       ]
+      ]
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Person-Lambda/ServiceRole/Resource"
+   }
+  },
+  "TikkiePersonLambda8FE3880A": {
+   "Type": "AWS::Lambda::Function",
+   "Properties": {
+    "Code": {
+     "S3Bucket": {
+      "Fn::Sub": "cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}"
+     },
+     "S3Key": "fcfd75818c81bb4af7e97ced4df11c68cc736582a68e186e2a9fdf9748384b32.zip"
+    },
+    "Role": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambdaServiceRole83CFAE74",
+      "Arn"
+     ]
+    },
+    "Handler": "person.handler",
+    "Runtime": "nodejs14.x"
+   },
+   "DependsOn": [
+    "TikkiePersonLambdaServiceRole83CFAE74"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Person-Lambda/Resource",
+    "aws:asset:path": "asset.fcfd75818c81bb4af7e97ced4df11c68cc736582a68e186e2a9fdf9748384b32",
+    "aws:asset:is-bundled": false,
+    "aws:asset:property": "Code"
+   }
+  },
+  "TikkiePersonTablePermissions8009E296": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": [
+        "dynamodb:BatchGetItem",
+        "dynamodb:BatchWriteItem",
+        "dynamodb:DeleteItem",
+        "dynamodb:GetItem",
+        "dynamodb:PutItem",
+        "dynamodb:Query",
+        "dynamodb:Scan",
+        "dynamodb:UpdateItem"
+       ],
+       "Effect": "Allow",
+       "Resource": {
+        "Fn::GetAtt": [
+         "TikkiePersonsTable3EE4F64B",
+         "Arn"
+        ]
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "TikkiePersonTablePermissions8009E296",
+    "Roles": [
+     {
+      "Ref": "TikkiePersonLambdaServiceRole83CFAE74"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-PersonTablePermissions/Resource"
+   }
+  },
+  "TikkiePersonsAPI318B1DBD": {
+   "Type": "AWS::ApiGateway::RestApi",
+   "Properties": {
+    "Description": "Persons API",
+    "Name": "Tikkie-Persons-API"
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Resource"
+   }
+  },
+  "TikkiePersonsAPIDeployment0D40A1374b1b42de3da7067b5bbf5106b4f9a823": {
+   "Type": "AWS::ApiGateway::Deployment",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "Description": "Persons API"
+   },
+   "DependsOn": [
+    "TikkiePersonsAPIOPTIONS3E4FAA66",
+    "TikkiePersonsAPIpersonsidDELETE25AFA6D3",
+    "TikkiePersonsAPIpersonsidGET4425B512",
+    "TikkiePersonsAPIpersonsidOPTIONS0F540815",
+    "TikkiePersonsAPIpersonsid369C13B9",
+    "TikkiePersonsAPIpersonsGET8EEABBB6",
+    "TikkiePersonsAPIpersonsOPTIONS8204C42D",
+    "TikkiePersonsAPIpersonsPOST77EFBF38",
+    "TikkiePersonsAPIpersons9797B075"
+   ],
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Deployment/Resource"
+   }
+  },
+  "TikkiePersonsAPIDeploymentStagedev873C8667": {
+   "Type": "AWS::ApiGateway::Stage",
+   "Properties": {
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "DeploymentId": {
+     "Ref": "TikkiePersonsAPIDeployment0D40A1374b1b42de3da7067b5bbf5106b4f9a823"
+    },
+    "StageName": "dev"
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/DeploymentStage.dev/Resource"
+   }
+  },
+  "TikkiePersonsAPIOPTIONS3E4FAA66": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Fn::GetAtt": [
+      "TikkiePersonsAPI318B1DBD",
+      "RootResourceId"
+     ]
+    },
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'http://localhost:3000'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,POST,PUT,PATCH,DELETE'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/OPTIONS/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersons9797B075": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Fn::GetAtt": [
+      "TikkiePersonsAPI318B1DBD",
+      "RootResourceId"
+     ]
+    },
+    "PathPart": "persons",
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersonsOPTIONS8204C42D": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Ref": "TikkiePersonsAPIpersons9797B075"
+    },
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'http://localhost:3000'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,POST,PUT,PATCH,DELETE'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/OPTIONS/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersonsid369C13B9": {
+   "Type": "AWS::ApiGateway::Resource",
+   "Properties": {
+    "ParentId": {
+     "Ref": "TikkiePersonsAPIpersons9797B075"
+    },
+    "PathPart": "{id}",
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersonsidOPTIONS0F540815": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "OPTIONS",
+    "ResourceId": {
+     "Ref": "TikkiePersonsAPIpersonsid369C13B9"
+    },
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationResponses": [
+      {
+       "ResponseParameters": {
+        "method.response.header.Access-Control-Allow-Headers": "'Content-Type,X-Amz-Date,Authorization,X-Api-Key'",
+        "method.response.header.Access-Control-Allow-Origin": "'http://localhost:3000'",
+        "method.response.header.Vary": "'Origin'",
+        "method.response.header.Access-Control-Allow-Methods": "'OPTIONS,GET,POST,PUT,PATCH,DELETE'",
+        "method.response.header.Access-Control-Allow-Credentials": "'true'"
+       },
+       "StatusCode": "204"
+      }
+     ],
+     "RequestTemplates": {
+      "application/json": "{ statusCode: 200 }"
+     },
+     "Type": "MOCK"
+    },
+    "MethodResponses": [
+     {
+      "ResponseParameters": {
+       "method.response.header.Access-Control-Allow-Headers": true,
+       "method.response.header.Access-Control-Allow-Origin": true,
+       "method.response.header.Vary": true,
+       "method.response.header.Access-Control-Allow-Methods": true,
+       "method.response.header.Access-Control-Allow-Credentials": true
+      },
+      "StatusCode": "204"
+     }
+    ]
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/OPTIONS/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersonsidGETApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersonsid2BD4E24E": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/",
+       {
+        "Ref": "TikkiePersonsAPIDeploymentStagedev873C8667"
+       },
+       "/GET/persons/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/GET/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons.{id}"
+   }
+  },
+  "TikkiePersonsAPIpersonsidGETApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersonsid05AFD2CD": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/test-invoke-stage/GET/persons/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/GET/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons.{id}"
+   }
+  },
+  "TikkiePersonsAPIpersonsidGET4425B512": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "TikkiePersonsAPIpersonsid369C13B9"
+    },
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TikkiePersonLambda8FE3880A",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/GET/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersonsidDELETEApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12DELETEpersonsid69CE6DC1": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/",
+       {
+        "Ref": "TikkiePersonsAPIDeploymentStagedev873C8667"
+       },
+       "/DELETE/persons/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/DELETE/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.DELETE..persons.{id}"
+   }
+  },
+  "TikkiePersonsAPIpersonsidDELETEApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12DELETEpersonsid595707C8": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/test-invoke-stage/DELETE/persons/*"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/DELETE/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.DELETE..persons.{id}"
+   }
+  },
+  "TikkiePersonsAPIpersonsidDELETE25AFA6D3": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "DELETE",
+    "ResourceId": {
+     "Ref": "TikkiePersonsAPIpersonsid369C13B9"
+    },
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TikkiePersonLambda8FE3880A",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/DELETE/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersonsGETApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersonsB358037C": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/",
+       {
+        "Ref": "TikkiePersonsAPIDeploymentStagedev873C8667"
+       },
+       "/GET/persons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/GET/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons"
+   }
+  },
+  "TikkiePersonsAPIpersonsGETApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersons046396E8": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/test-invoke-stage/GET/persons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/GET/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons"
+   }
+  },
+  "TikkiePersonsAPIpersonsGET8EEABBB6": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "GET",
+    "ResourceId": {
+     "Ref": "TikkiePersonsAPIpersons9797B075"
+    },
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TikkiePersonLambda8FE3880A",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/GET/Resource"
+   }
+  },
+  "TikkiePersonsAPIpersonsPOSTApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12POSTpersons3CD5D699": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/",
+       {
+        "Ref": "TikkiePersonsAPIDeploymentStagedev873C8667"
+       },
+       "/POST/persons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/POST/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.POST..persons"
+   }
+  },
+  "TikkiePersonsAPIpersonsPOSTApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12POSTpersons93AA61FC": {
+   "Type": "AWS::Lambda::Permission",
+   "Properties": {
+    "Action": "lambda:InvokeFunction",
+    "FunctionName": {
+     "Fn::GetAtt": [
+      "TikkiePersonLambda8FE3880A",
+      "Arn"
+     ]
+    },
+    "Principal": "apigateway.amazonaws.com",
+    "SourceArn": {
+     "Fn::Join": [
+      "",
+      [
+       "arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":execute-api:",
+       {
+        "Ref": "AWS::Region"
+       },
+       ":",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":",
+       {
+        "Ref": "TikkiePersonsAPI318B1DBD"
+       },
+       "/test-invoke-stage/POST/persons"
+      ]
+     ]
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/POST/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.POST..persons"
+   }
+  },
+  "TikkiePersonsAPIpersonsPOST77EFBF38": {
+   "Type": "AWS::ApiGateway::Method",
+   "Properties": {
+    "HttpMethod": "POST",
+    "ResourceId": {
+     "Ref": "TikkiePersonsAPIpersons9797B075"
+    },
+    "RestApiId": {
+     "Ref": "TikkiePersonsAPI318B1DBD"
+    },
+    "AuthorizationType": "NONE",
+    "Integration": {
+     "IntegrationHttpMethod": "POST",
+     "Type": "AWS_PROXY",
+     "Uri": {
+      "Fn::Join": [
+       "",
+       [
+        "arn:",
+        {
+         "Ref": "AWS::Partition"
+        },
+        ":apigateway:",
+        {
+         "Ref": "AWS::Region"
+        },
+        ":lambda:path/2015-03-31/functions/",
+        {
+         "Fn::GetAtt": [
+          "TikkiePersonLambda8FE3880A",
+          "Arn"
+         ]
+        },
+        "/invocations"
+       ]
+      ]
+     }
+    }
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/Tikkie-Persons-API/Default/persons/POST/Resource"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/02PQU/DMAyFf8vuaViHJnHdhrghpo375CameG2SqnGYqqr/nSQtoid/fn55jndyv5XbDTx8oXRTtFTJ8cqgGhGl26gHC8bpKH5C1aI4fdkMk2jBVBrk+BasYnI2jdZ8xt6Q97GbBIGR48XN73M9u5bUkH2ZJuGfb+A9speHVGIvj0E1yEfwKKCjGhgfMMQg9HzoKGct+Ipd6waDlpO66uIpdd46Q/S70CvMme/I306n4UJ/0yU58zT9y/ljKYhsnTwfgbvAa3fik7OaON9tnUZ5908/5Yssd7Lc3D1R0QfLZFBe5voLCREVF4IBAAA="
+   },
+   "Metadata": {
+    "aws:cdk:path": "PersonDirectoryStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "TikkiePersonsAPIEndpointBBA10CCB": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TikkiePersonsAPI318B1DBD"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TikkiePersonsAPIDeploymentStagedev873C8667"
+      },
+      "/"
+     ]
+    ]
+   }
+  },
+  "apiUrl": {
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "https://",
+      {
+       "Ref": "TikkiePersonsAPI318B1DBD"
+      },
+      ".execute-api.",
+      {
+       "Ref": "AWS::Region"
+      },
+      ".",
+      {
+       "Ref": "AWS::URLSuffix"
+      },
+      "/",
+      {
+       "Ref": "TikkiePersonsAPIDeploymentStagedev873C8667"
+      },
+      "/"
+     ]
+    ]
+   }
+  }
+ },
+ "Conditions": {
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-2"
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ },
+ "Parameters": {
+  "BootstrapVersion": {
+   "Type": "AWS::SSM::Parameter::Value<String>",
+   "Default": "/cdk-bootstrap/hnb659fds/version",
+   "Description": "Version of the CDK Bootstrap resources in this environment, automatically retrieved from SSM Parameter Store. [cdk:skip]"
+  }
+ },
+ "Rules": {
+  "CheckBootstrapVersion": {
+   "Assertions": [
+    {
+     "Assert": {
+      "Fn::Not": [
+       {
+        "Fn::Contains": [
+         [
+          "1",
+          "2",
+          "3",
+          "4",
+          "5"
+         ],
+         {
+          "Ref": "BootstrapVersion"
+         }
+        ]
+       }
+      ]
+     },
+     "AssertDescription": "CDK bootstrap stack version 6 required. Please run 'cdk bootstrap' with a recent version of the CDK CLI."
+    }
+   ]
+  }
+ }
+}

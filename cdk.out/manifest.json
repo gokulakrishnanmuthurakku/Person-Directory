@@ -1,0 +1,234 @@
+{
+  "version": "21.0.0",
+  "artifacts": {
+    "Tree": {
+      "type": "cdk:tree",
+      "properties": {
+        "file": "tree.json"
+      }
+    },
+    "PersonDirectoryStack.assets": {
+      "type": "cdk:asset-manifest",
+      "properties": {
+        "file": "PersonDirectoryStack.assets.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+      }
+    },
+    "PersonDirectoryStack": {
+      "type": "aws:cloudformation:stack",
+      "environment": "aws://unknown-account/unknown-region",
+      "properties": {
+        "templateFile": "PersonDirectoryStack.template.json",
+        "validateOnSynth": false,
+        "assumeRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-deploy-role-${AWS::AccountId}-${AWS::Region}",
+        "cloudFormationExecutionRoleArn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-cfn-exec-role-${AWS::AccountId}-${AWS::Region}",
+        "stackTemplateAssetObjectUrl": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6c537f11548ac0659278068435cc54540f15964dde8a4ce727a8e15f459b0424.json",
+        "requiresBootstrapStackVersion": 6,
+        "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version",
+        "additionalDependencies": [
+          "PersonDirectoryStack.assets"
+        ],
+        "lookupRole": {
+          "arn": "arn:${AWS::Partition}:iam::${AWS::AccountId}:role/cdk-hnb659fds-lookup-role-${AWS::AccountId}-${AWS::Region}",
+          "requiresBootstrapStackVersion": 8,
+          "bootstrapStackVersionSsmParameter": "/cdk-bootstrap/hnb659fds/version"
+        }
+      },
+      "dependencies": [
+        "PersonDirectoryStack.assets"
+      ],
+      "metadata": {
+        "/PersonDirectoryStack/Tikkie-Persons-Table": [
+          {
+            "type": "aws:cdk:hasPhysicalName",
+            "data": {
+              "Ref": "TikkiePersonsTable3EE4F64B"
+            }
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-Table/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsTable3EE4F64B"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Person-Lambda/ServiceRole/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonLambdaServiceRole83CFAE74"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Person-Lambda/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonLambda8FE3880A"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-PersonTablePermissions/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonTablePermissions8009E296"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPI318B1DBD"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Deployment/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIDeployment0D40A1374b1b42de3da7067b5bbf5106b4f9a823"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/DeploymentStage.dev/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIDeploymentStagedev873C8667"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Endpoint": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIEndpointBBA10CCB"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIOPTIONS3E4FAA66"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersons9797B075"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsOPTIONS8204C42D"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsid369C13B9"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/OPTIONS/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsidOPTIONS0F540815"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/GET/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsidGETApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersonsid2BD4E24E"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/GET/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsidGETApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersonsid05AFD2CD"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsidGET4425B512"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/DELETE/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.DELETE..persons.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsidDELETEApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12DELETEpersonsid69CE6DC1"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/DELETE/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.DELETE..persons.{id}": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsidDELETEApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12DELETEpersonsid595707C8"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/{id}/DELETE/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsidDELETE25AFA6D3"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/GET/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsGETApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersonsB358037C"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/GET/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.GET..persons": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsGETApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12GETpersons046396E8"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/GET/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsGET8EEABBB6"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/POST/ApiPermission.PersonDirectoryStackTikkiePersonsAPICEAA6F12.POST..persons": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsPOSTApiPermissionPersonDirectoryStackTikkiePersonsAPICEAA6F12POSTpersons3CD5D699"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/POST/ApiPermission.Test.PersonDirectoryStackTikkiePersonsAPICEAA6F12.POST..persons": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsPOSTApiPermissionTestPersonDirectoryStackTikkiePersonsAPICEAA6F12POSTpersons93AA61FC"
+          }
+        ],
+        "/PersonDirectoryStack/Tikkie-Persons-API/Default/persons/POST/Resource": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "TikkiePersonsAPIpersonsPOST77EFBF38"
+          }
+        ],
+        "/PersonDirectoryStack/apiUrl": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "apiUrl"
+          }
+        ],
+        "/PersonDirectoryStack/CDKMetadata/Default": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadata"
+          }
+        ],
+        "/PersonDirectoryStack/CDKMetadata/Condition": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CDKMetadataAvailable"
+          }
+        ],
+        "/PersonDirectoryStack/BootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "BootstrapVersion"
+          }
+        ],
+        "/PersonDirectoryStack/CheckBootstrapVersion": [
+          {
+            "type": "aws:cdk:logicalId",
+            "data": "CheckBootstrapVersion"
+          }
+        ]
+      },
+      "displayName": "PersonDirectoryStack"
+    }
+  }
+}
